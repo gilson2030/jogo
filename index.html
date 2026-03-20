@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Matemática • Conhecimentos Gerais</title>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+    :root{
+      --primary:#7c3aed;
+      --secondary:#f59e0b;
+      --bg1:#140b2d;
+      --bg2:#0b2a22;
+      --card:#101632;
+      --card2:#0d1228;
+      --text:#eef2ff;
+      --muted:rgba(238,242,255,.74);
+      --line:rgba(255,255,255,.10);
+      --success:#22c55e;
+      --danger:#ef4444;
+      --radius:24px;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Montserrat,system-ui,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(900px 500px at 85% 15%, rgba(245,158,11,.18), transparent 60%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+
+    .app{
+      width:min(980px,100%);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow:var(--shadow);
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:18px 22px;
+      border-bottom:1px solid var(--line);
+      background:rgba(0,0,0,.12);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      background:conic-gradient(from 210deg, var(--primary), var(--secondary));
+      box-shadow:0 8px 18px rgba(124,58,237,.25);
+    }
+
+    .title h1{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .title p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .qtotal{
+      color:var(--secondary);
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .progressWrap{
+      padding:14px 22px 18px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .progressRow{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .bar{
+      width:100%;
+      height:10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.07);
+      overflow:hidden;
+    }
+
+    .bar > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--secondary),var(--primary));
+      transition:.3s ease;
+      border-radius:999px;
+    }
+
+    .screen{
+      padding:26px;
+      background:linear-gradient(180deg,var(--card),var(--card2));
+      min-height:520px;
+    }
+
+    .titleMain{
+      font-size:26px;
+      font-weight:800;
+      margin:0 0 8px;
+    }
+
+    .subMain{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      font-weight:600;
+    }
+
+    .formGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:14px;
+      margin:18px 0;
+    }
+
+    .field label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      margin:0 0 8px 4px;
+    }
+
+    .field input{
+      width:100%;
+      height:50px;
+      border:none;
+      outline:none;
+      border-radius:14px;
+      padding:0 14px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--line);
+      color:var(--text);
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:16px 0 22px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .rowEnd{
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      border-radius:16px;
+      padding:14px 22px;
+      font-weight:800;
+      font-size:15px;
+      transition:.2s ease;
+    }
+
+    .btnPrimary{
+      color:#fff;
+      background:linear-gradient(180deg,var(--secondary),var(--primary));
+      box-shadow:0 12px 24px rgba(124,58,237,.25);
+    }
+
+    .btnGhost{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+    }
+
+    .btn:hover{ transform:translateY(-1px); }
+
+    .qHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .question{
+      font-size:28px;
+      font-weight:800;
+      line-height:1.3;
+      margin:8px 0 18px;
+    }
+
+    .options{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .option{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      text-align:left;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      cursor:pointer;
+      transition:.2s ease;
+      font-family:inherit;
+    }
+
+    .option:hover{
+      border-color:rgba(245,158,11,.55);
+      background:rgba(245,158,11,.09);
+    }
+
+    .option.selected{
+      border-color:rgba(124,58,237,.8);
+      background:rgba(124,58,237,.16);
+    }
+
+    .badge{
+      width:36px;
+      height:36px;
+      min-width:36px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(245,158,11,.15);
+      border:1px solid rgba(245,158,11,.35);
+      color:var(--secondary);
+      font-weight:800;
+    }
+
+    .optionText{
+      font-size:15px;
+      font-weight:700;
+      line-height:1.4;
+    }
+
+    .smallHint{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .alert{
+      margin-bottom:14px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(245,158,11,.14);
+      border:1px solid rgba(245,158,11,.35);
+      color:var(--secondary);
+      font-weight:800;
+      font-size:14px;
+    }
+
+    .resultGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .panel h2{
+      margin:0 0 8px;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .score{
+      font-size:34px;
+      font-weight:800;
+      color:var(--secondary);
+      margin:6px 0 8px;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      font-weight:700;
+    }
+
+    .rankTitle{
+      margin:16px 0 10px;
+      font-size:14px;
+      font-weight:800;
+    }
+
+    .rankList{
+      list-style:none;
+      margin:0;
+      padding:0;
+      display:grid;
+      gap:8px;
+    }
+
+    .rankList li{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .rankList strong{
+      color:var(--secondary);
+    }
+
+    .footer{
+      text-align:center;
+      margin-top:18px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    @media (max-width:860px){
+      .formGrid,
+      .resultGrid{
+        grid-template-columns:1fr;
+      }
+
+      .question{
+        font-size:24px;
+      }
+    }
+
+    @media (max-width:520px){
+      .screen{ padding:18px; }
+      .top{ padding:16px; }
+      .progressWrap{ padding:12px 16px 16px; }
+      .question{ font-size:21px; }
+      .actions{ flex-direction:column; }
+      .actions .btn{ width:100%; }
+      .rowEnd .btn{ width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="themeBtn" id="themeBtn" onclick="toggleTheme()">🌙</div>
+
+  <div class="app">
+    <div class="top">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <h1>Quiz • Matemática</h1>
+          <p>Conhecimentos gerais • 20 perguntas</p>
+        </div>
+      </div>
+      <div class="qtotal"><span id="totalQuestions">20</span> questões</div>
+    </div>
+
+    <div class="progressWrap">
+      <div class="progressRow">
+        <span id="userInfo"></span>
+        <span id="progressText">0 / 20</span>
+      </div>
+      <div class="bar"><div id="progressBar"></div></div>
+    </div>
+
+    <div class="screen" id="screen"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Qual é o resultado de 7 × 8?", o: ["54", "56", "58", "64"], a: 1, tag: "Operações" },
+      { q: "Qual é a fração equivalente a 0,5?", o: ["1/3", "1/4", "1/2", "2/3"], a: 2, tag: "Frações" },
+      { q: "Qual é o valor de 9²?", o: ["18", "72", "81", "99"], a: 2, tag: "Potenciação" },
+      { q: "Quantos lados tem um hexágono?", o: ["5", "6", "7", "8"], a: 1, tag: "Geometria" },
+      { q: "Qual é o resultado de 15% de 200?", o: ["20", "25", "30", "35"], a: 2, tag: "Porcentagem" },
+      { q: "Qual é o número primo entre as opções abaixo?", o: ["21", "27", "29", "35"], a: 2, tag: "Números" },
+      { q: "Quanto é √64?", o: ["6", "7", "8", "9"], a: 2, tag: "Radiciação" },
+      { q: "Qual é a soma dos ângulos internos de um triângulo?", o: ["90°", "180°", "270°", "360°"], a: 1, tag: "Geometria" },
+      { q: "Um quilômetro equivale a:", o: ["10 metros", "100 metros", "1.000 metros", "10.000 metros"], a: 2, tag: "Medidas" },
+      { q: "Qual é o valor de 3x quando x = 4?", o: ["7", "10", "12", "16"], a: 2, tag: "Álgebra" },
+      { q: "Qual dessas figuras tem todos os lados iguais e quatro ângulos retos?", o: ["Retângulo", "Trapézio", "Quadrado", "Losango"], a: 2, tag: "Geometria" },
+      { q: "Qual é o resultado de 1000 ÷ 25?", o: ["20", "30", "40", "50"], a: 2, tag: "Divisão" },
+      { q: "Qual é a média aritmética de 4, 6 e 8?", o: ["5", "6", "7", "8"], a: 1, tag: "Estatística" },
+      { q: "Qual é o sucessor de 999?", o: ["100", "1000", "1001", "9999"], a: 1, tag: "Números" },
+      { q: "Quantos minutos existem em 2 horas e meia?", o: ["120", "130", "140", "150"], a: 3, tag: "Tempo" },
+      { q: "Qual é o resultado de 2⁵?", o: ["10", "16", "25", "32"], a: 3, tag: "Potenciação" },
+      { q: "Qual é a área de um quadrado de lado 5?", o: ["10", "20", "25", "30"], a: 2, tag: "Geometria" },
+      { q: "Em uma dúzia há:", o: ["10 unidades", "12 unidades", "14 unidades", "15 unidades"], a: 1, tag: "Contagem" },
+      { q: "Qual é a forma decimal de 3/4?", o: ["0,25", "0,5", "0,75", "1,25"], a: 2, tag: "Frações" },
+      { q: "Qual é o perímetro de um triângulo com lados 3, 4 e 5?", o: ["10", "11", "12", "13"], a: 2, tag: "Geometria" }
+    ];
+
+    const letters = ["A", "B", "C", "D"];
+    const screen = document.getElementById("screen");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const userInfo = document.getElementById("userInfo");
+    const totalQuestions = document.getElementById("totalQuestions");
+    totalQuestions.textContent = questions.length;
+
+    let stage = "intro";
+    let current = 0;
+    let answers = Array(questions.length).fill(null);
+    let profile = { aluno:"", professor:"", disciplina:"" };
+    let chart = null;
+
+    const RANK_KEY = "quiz_conhecimentos_gerais_matematica_rank_v1";
+
+    function setTheme(light){
+      document.body.classList.toggle("light", light);
+      document.getElementById("themeBtn").textContent = light ? "☀️" : "🌙";
+      localStorage.setItem("quizMathTheme", light ? "light" : "dark");
+      if(stage === "result"){
+        setTimeout(() => renderChart(getScore(), questions.length - getScore()), 0);
+      }
+    }
+
+    function toggleTheme(){
+      setTheme(!document.body.classList.contains("light"));
+    }
+
+    const savedTheme = localStorage.getItem("quizMathTheme");
+    if(savedTheme === "light") setTheme(true);
+
+    function esc(str){
+      return String(str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function updateHeader(){
+      const done = stage === "intro" ? 0 : (stage === "quiz" ? current + 1 : questions.length);
+      progressText.textContent = `${done} / ${questions.length}`;
+      progressBar.style.width = `${Math.round((done / questions.length) * 100)}%`;
+
+      if(profile.aluno || profile.professor || profile.disciplina){
+        userInfo.textContent = `Aluno: ${profile.aluno || "—"} • Prof.: ${profile.professor || "—"} • Disc.: ${profile.disciplina || "—"}`;
+      } else {
+        userInfo.textContent = "";
+      }
+    }
+
+    function renderIntro(msg = ""){
+      stage = "intro";
+      updateHeader();
+
+      screen.innerHTML = `
+        ${msg ? `<div class="alert">⚠️ ${esc(msg)}</div>` : ""}
+        <h2 class="titleMain">Antes de começar...</h2>
+        <p class="subMain">
+          Preencha os dados abaixo para iniciar o jogo de perguntas e respostas.
+        </p>
+
+        <div class="formGrid">
+          <div class="field">
+            <label>Nome do aluno</label>
+            <input id="aluno" placeholder="Ex.: Ana Souza" value="${esc(profile.aluno)}">
+          </div>
+          <div class="field">
+            <label>Nome do professor</label>
+            <input id="professor" placeholder="Ex.: Prof. Gilson" value="${esc(profile.professor)}">
+          </div>
+          <div class="field">
+            <label>Disciplina</label>
+            <input id="disciplina" placeholder="Ex.: Matemática" value="${esc(profile.disciplina)}">
+          </div>
+        </div>
+
+        <div class="chips">
+          <span class="chip"><span style="color:#f59e0b;">●</span> Conhecimentos gerais</span>
+          <span class="chip"><span style="color:#f59e0b;">●</span> Matemática</span>
+          <span class="chip"><span style="color:#f59e0b;">●</span> 20 questões</span>
+        </div>
+
+        <div class="rowEnd">
+          <button class="btn btnPrimary" onclick="startQuiz()">Iniciar jogo</button>
+        </div>
+
+        <div class="footer">© 2026 • Quiz criado pelo professor Gilson — Conhecimentos gerais de Matemática.</div>
+      `;
+    }
+
+    function startQuiz(){
+      const aluno = (document.getElementById("aluno")?.value || "").trim();
+      const professor = (document.getElementById("professor")?.value || "").trim();
+      const disciplina = (document.getElementById("disciplina")?.value || "").trim();
+
+      profile = { aluno, professor, disciplina };
+
+      if(!aluno || !professor || !disciplina){
+        renderIntro("Preencha todos os campos para iniciar.");
+        return;
+      }
+
+      current = 0;
+      answers = Array(questions.length).fill(null);
+      renderQuestion();
+    }
+
+    function renderQuestion(msg = ""){
+      stage = "quiz";
+      updateHeader();
+
+      const q = questions[current];
+      const selected = answers[current];
+
+      screen.innerHTML = `
+        ${msg ? `<div class="alert">⚠️ ${esc(msg)}</div>` : ""}
+
+        <div class="qHeader">
+          <span>Questão ${current + 1} • ${esc(q.tag)}</span>
+          <span>${current + 1}/${questions.length}</span>
+        </div>
+
+        <div class="question">${esc(q.q)}</div>
+
+        <div class="options">
+          ${q.o.map((opt, i) => `
+            <button class="option ${selected === i ? "selected" : ""}" onclick="pick(${i})">
+              <span class="badge">${letters[i]}</span>
+              <span class="optionText">${esc(opt)}</span>
+            </button>
+          `).join("")}
+        </div>
+
+        <div class="smallHint">Selecione uma alternativa</div>
+
+        <div class="actions">
+          <button class="btn btnGhost" onclick="back()" ${current === 0 ? "disabled" : ""}>Voltar</button>
+          <button class="btn btnPrimary" onclick="nextQuestion()">Confirmar resposta</button>
+        </div>
+
+        <div class="footer">© 2026 • Quiz criado pelo professor Gilson — Conhecimentos gerais de Matemática.</div>
+      `;
+    }
+
+    function pick(i){
+      answers[current] = i;
+      renderQuestion();
+    }
+
+    function back(){
+      if(current > 0){
+        current--;
+        renderQuestion();
+      }
+    }
+
+    function nextQuestion(){
+      if(answers[current] === null){
+        renderQuestion("Responda a questão antes de avançar.");
+        return;
+      }
+
+      current++;
+      if(current >= questions.length){
+        renderResult();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function getScore(){
+      return answers.filter((ans, i) => ans === questions[i].a).length;
+    }
+
+    function saveRanking(score){
+      const item = {
+        aluno: profile.aluno,
+        score,
+        total: questions.length,
+        date: new Date().toLocaleString("pt-BR")
+      };
+
+      let rank = JSON.parse(localStorage.getItem(RANK_KEY) || "[]");
+      rank.push(item);
+      rank.sort((a,b) => b.score - a.score);
+      rank = rank.slice(0, 10);
+      localStorage.setItem(RANK_KEY, JSON.stringify(rank));
+    }
+
+    function renderRanking(){
+      const rank = JSON.parse(localStorage.getItem(RANK_KEY) || "[]");
+      const ul = document.getElementById("rankList");
+      if(!ul) return;
+
+      ul.innerHTML = rank.map((r, i) => `
+        <li>
+          <span><strong>${i+1}º</strong> ${esc(r.aluno)}</span>
+          <span>${r.score}/${r.total}</span>
+        </li>
+      `).join("");
+    }
+
+    function renderChart(right, wrong){
+      const el = document.getElementById("chart");
+      if(!el) return;
+
+      if(chart){
+        chart.destroy();
+        chart = null;
+      }
+
+      const light = document.body.classList.contains("light");
+
+      chart = new ApexCharts(el, {
+        chart:{
+          type:"pie",
+          height:320,
+          fontFamily:"Montserrat, Arial, sans-serif"
+        },
+        series:[right, wrong],
+        labels:["Acertos", "Erros"],
+        colors:["#7c3aed", "#f59e0b"],
+        legend:{
+          position:"bottom",
+          labels:{ colors: light ? "#15142a" : "#eef2ff" }
+        },
+        dataLabels:{
+          enabled:true,
+          style:{ fontSize:"14px", fontWeight:800 },
+          formatter:(val, opts) => `${opts.w.globals.labels[opts.seriesIndex]}: ${val.toFixed(1)}%`
+        },
+        stroke:{
+          width:2,
+          colors:[light ? "#ffffff" : "#0d1228"]
+        }
+      });
+
+      chart.render();
+    }
+
+    function renderResult(){
+      stage = "result";
+      updateHeader();
+
+      const score = getScore();
+      const wrong = questions.length - score;
+
+      saveRanking(score);
+
+      screen.innerHTML = `
+        <div class="resultGrid">
+          <div class="panel">
+            <h2>Resultado final</h2>
+            <div class="score">${score} / ${questions.length}</div>
+            <p class="muted">
+              Aluno: <b>${esc(profile.aluno)}</b><br>
+              Professor: <b>${esc(profile.professor)}</b><br>
+              Disciplina: <b>${esc(profile.disciplina)}</b>
+            </p>
+            <p class="muted" style="margin-top:10px;">
+              ${score >= 14 ? "Excelente desempenho! 🎉" : score >= 10 ? "Bom trabalho! Continue praticando. 💪" : "Vamos estudar mais e tentar novamente. 📚"}
+            </p>
+
+            <div class="rankTitle">Ranking (no dispositivo)</div>
+            <ul class="rankList" id="rankList"></ul>
+
+            <div class="actions">
+              <button class="btn btnGhost" onclick="restart()">Voltar ao início</button>
+              <button class="btn btnPrimary" onclick="redo()">Refazer</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Desempenho</h2>
+            <div id="chart"></div>
+          </div>
+        </div>
+
+        <div class="footer">© 2026 • Quiz criado pelo professor Gilson — Conhecimentos gerais de Matemática.</div>
+      `;
+
+      renderRanking();
+      renderChart(score, wrong);
+    }
+
+    function redo(){
+      current = 0;
+      answers = Array(questions.length).fill(null);
+      renderQuestion();
+    }
+
+    function restart(){
+      current = 0;
+      answers = Array(questions.length).fill(null);
+      renderIntro();
+    }
+
+    renderIntro();
+  </script>
+</body>
+</html>
